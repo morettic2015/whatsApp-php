@@ -40,8 +40,8 @@ class ClientTest extends \PHPUnit_Framework_TestCase {
      */
     public function testCreateGroup() {
         $client = Client::getInstance();
-        $message = 'Тестовое приветствие ' . rand(100000, 999999);
-        $data = $client->createGroup('Тестовая группа', [$this->phone], $message);
+        $message = 'Test message ' . rand(100000, 999999);
+        $data = $client->createGroup('Test group', [$this->phone], $message);
         $this->assertObjectHasAttribute('created', $data);
         $this->assertAttributeEquals(true, 'created', $data);
         return $message;
