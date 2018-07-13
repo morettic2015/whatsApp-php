@@ -8,7 +8,7 @@ Light PHP library for interact with WhatsApp api.
 
 ## Installing
 
-The recommended way to install Guzzle is through
+The recommended way to install is through
 [Composer](http://getcomposer.org).
 
 ```bash

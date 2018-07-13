@@ -23,10 +23,14 @@ class ClientTest extends \PHPUnit_Framework_TestCase {
         $message = 'Test Message to phone ' . rand(100000, 999999);
         $client = Client::getInstance();
 
-        $result = $client->sendMessage([
-            'phone' => $this->phone,
-            'body' => $message
-        ]);
+        try {
+            $result = $client->sendMessage([
+                'phone' => $this->phone,
+                'body' => $message
+            ]);
+        } catch (\Exception $e) {
+            $result = $e;
+        }
 
         $this->assertInstanceOf('stdClass', $result);
         $this->assertAttributeEquals(
@@ -41,7 +45,11 @@ class ClientTest extends \PHPUnit_Framework_TestCase {
     public function testCreateGroup() {
         $client = Client::getInstance();
         $message = 'Test message ' . rand(100000, 999999);
-        $data = $client->createGroup('Test group', [$this->phone], $message);
+        try {
+            $data = $client->createGroup('Test group', [$this->phone], $message);
+        } catch (\Exception $e) {
+            $data = (object) ['error' => $e->getMessage()];
+        }
         $this->assertObjectHasAttribute('created', $data);
         $this->assertAttributeEquals(true, 'created', $data);
         return $message;
@@ -54,7 +62,11 @@ class ClientTest extends \PHPUnit_Framework_TestCase {
     public function testGetMessages() {
         $client = Client::getInstance();
 
-        $data = $client->getMessages();
+        try {
+            $data = $client->getMessages();
+        } catch (\Exception $e) {
+            $data = (object) ['error' => $e->getMessage()];
+        }
 
         $this->assertObjectHasAttribute('messages', $data);
         $this->assertObjectHasAttribute('lastMessageNumber', $data);
@@ -66,7 +78,11 @@ class ClientTest extends \PHPUnit_Framework_TestCase {
      */
     public function testGetStatus() {
         $client = Client::getInstance();
-        $data = $client->getStatus();
+        try {
+            $data = $client->getStatus();
+        } catch (\Exception $e) {
+            $data = (object) ['error' => $e->getMessage()];
+        }
         $this->assertObjectHasAttribute('accountStatus', $data);
     }
 
@@ -78,7 +94,13 @@ class ClientTest extends \PHPUnit_Framework_TestCase {
             'Logout will fail other tests'
         );
         $client = Client::getInstance();
-        $data = $client->logout();
+        
+        try {
+            $data = $client->logout();
+        } catch (\Exception $e) {
+            $data = (object) ['error' => $e->getMessage()];
+        }
+        
         $this->assertObjectHasAttribute('result', $data);
     }
 
@@ -87,7 +109,13 @@ class ClientTest extends \PHPUnit_Framework_TestCase {
      */
     public function testGetQrCode() {
         $client = Client::getInstance();
-        $data = $client->getQrCode();
+        
+        try {
+            $data = $client->getQrCode();
+        } catch (\Exception $e) {
+            $data = $e->getMessage();
+        }
+        
         $this->assertContains('PNG', $data);
     }
 
@@ -98,7 +126,13 @@ class ClientTest extends \PHPUnit_Framework_TestCase {
     public function testSetWebHook() {
         $url = 'http://testdomain.io/hook/' . rand(100000, 999999);
         $client = Client::getInstance();
-        $data = $client->setWebHook($url);
+        
+        try {
+            $data = $client->setWebHook($url);
+        } catch (\Exception $e) {
+            $data = (object) ['error' => $e->getMessage()];
+        }
+        
         $this->assertObjectHasAttribute('webhookUrl', $data);
         $this->assertObjectHasAttribute('set', $data);
         $this->assertAttributeEquals($url, 'webhookUrl', $data);
@@ -113,7 +147,13 @@ class ClientTest extends \PHPUnit_Framework_TestCase {
      */
     public function testGetWebHook($url) {
         $client = Client::getInstance();
-        $data = $client->getWebHook();
+        
+        try {
+            $data = $client->getWebHook();
+        } catch (\Exception $e) {
+            $data = (object) ['error' => $e->getMessage()];
+        }
+        
         $this->assertObjectHasAttribute('webhookUrl', $data);
         $this->assertObjectHasAttribute('set', $data);
         $this->assertAttributeEquals($url, 'webhookUrl', $data);
@@ -125,7 +165,13 @@ class ClientTest extends \PHPUnit_Framework_TestCase {
      */
     public function testClearMessagesQueue() {
         $client = Client::getInstance();
-        $data = $client->clearMessagesQueue();
+        
+        try {
+            $data = $client->clearMessagesQueue();
+        } catch (\Exception $e) {
+            $data = (object) ['error' => $e->getMessage()];
+        }
+        
         $this->assertInstanceOf('stdClass', $data);
         $this->assertObjectHasAttribute('message', $data);
         $this->assertObjectHasAttribute('messageTextsExample', $data);
@@ -137,7 +183,13 @@ class ClientTest extends \PHPUnit_Framework_TestCase {
      */
     public function testGetMessagesQueue() {
         $client = Client::getInstance();
-        $data = $client->getMessagesQueue();
+        
+        try {
+            $data = $client->getMessagesQueue();
+        } catch (\Exception $e) {
+            $data = (object) ['error' => $e->getMessage()];
+        }
+        
         $this->assertInstanceOf('stdClass', $data);
         $this->assertObjectHasAttribute('totalMessages', $data);
         $this->assertObjectHasAttribute('first100', $data);
@@ -149,7 +201,13 @@ class ClientTest extends \PHPUnit_Framework_TestCase {
      */
     public function testReboot() {
         $client = Client::getInstance();
-        $data = $client->reboot();
+        
+        try {
+            $data = $client->reboot();
+        } catch (\Exception $e) {
+            $data = (object) ['error' => $e->getMessage()];
+        }
+        
         $this->assertInstanceOf('stdClass', $data);
         $this->assertObjectHasAttribute('success', $data);
         $this->assertAttributeEquals(true, 'success', $data);
@@ -163,9 +221,15 @@ class ClientTest extends \PHPUnit_Framework_TestCase {
         $name = 'sample.jpg';
         $imgData = base64_encode(file_get_contents($name));
         $src = 'data: '.mime_content_type($name).';base64,'.$imgData;
-        $data = $client->sendFile([
-            'phone' => $this->phone, 'body' => $src, 'filename' => 'sample.jpg'
-        ]);
+
+        try {
+            $data = $client->sendFile([
+                'phone' => $this->phone, 'body' => $src, 'filename' => 'sample.jpg'
+            ]);
+        } catch (\Exception $e) {
+            $data = (object) ['error' => $e->getMessage()];
+        }
+
         $this->assertInstanceOf('stdClass', $data);
         $this->assertObjectHasAttribute('sent', $data);
         $this->assertObjectHasAttribute('message', $data);

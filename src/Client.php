@@ -45,6 +45,7 @@ class Client {
     /**
      * Send a message
      * @param array $params - array of message parameters
+     * @throws \Exception
      * @return object|string
      */
     public function sendMessage($params) {
@@ -71,7 +72,7 @@ class Client {
                 ['verify' => false, 'json' => $params]
             );
         } catch (GuzzleException $e) {
-            return 'Unknown send error';
+            throw new \Exception('Request error');
         }
 
         return json_decode($res->getBody());
@@ -80,6 +81,7 @@ class Client {
     /**
      * Return list of messages
      * @param bool|int $last - true last message number
+     * @throws \Exception
      * @return mixed
      */
     public function getMessages($last = true) {
@@ -96,13 +98,14 @@ class Client {
                 ['verify' => false, 'query' => $params]
             );
         } catch (GuzzleException $e) {
-            return 'Unknown send error';
+            throw new \Exception('Request error');
         }
         return json_decode($res->getBody());
     }
 
     /**
      * Return current account status
+     * @throws \Exception
      * @return mixed
      */
     public function getStatus() {
@@ -113,13 +116,14 @@ class Client {
                 ['verify' => false]
             );
         } catch (GuzzleException $e) {
-            return 'Unknown send error';
+            throw new \Exception('Request error');
         }
         return json_decode($res->getBody());
     }
 
     /**
      * Return QR-code link
+     * @throws \Exception
      * @return mixed
      */
     public function getQrCode() {
@@ -129,7 +133,7 @@ class Client {
                 'GET', $this->createUrl('qr_code'), ['verify' => false]
             );
         } catch (GuzzleException $e) {
-            return 'Unknown send error';
+            throw new \Exception('Request error');
         }
         return $res->getBody()->getContents();
     }
@@ -139,6 +143,7 @@ class Client {
      * @param string $groupName - name of group
      * @param array $phones - array of phone numbers
      * @param string $message - first message text
+     * @throws \Exception
      * @return mixed
      */
     public function createGroup($groupName, $phones, $message = '') {
@@ -154,7 +159,7 @@ class Client {
                 ['verify' => false, 'json' => $params]
             );
         } catch (GuzzleException $e) {
-            return 'Unknown send error';
+            throw new \Exception('Request error');
         }
         return json_decode($res->getBody());
     }
@@ -162,6 +167,7 @@ class Client {
     /**
      * Send file to chat or user
      * @param array $params - array of parameters
+     * @throws \Exception
      * @return object|string
      */
     public function sendFile($params) {
@@ -195,6 +201,7 @@ class Client {
     /**
      * Set webhook url for new messages
      * @param string $url - Url-адрес
+     * @throws \Exception
      * @return mixed
      */
     public function setWebHook($url) {
@@ -206,13 +213,14 @@ class Client {
                 ['verify' => false, 'json' => $params]
             );
         } catch (GuzzleException $e) {
-            return 'Unknown send error';
+            throw new \Exception('Request error');
         }
         return json_decode($res->getBody());
     }
 
     /**
      * Return current webhook
+     * @throws \Exception
      * @return mixed
      */
     public function getWebHook() {
@@ -220,13 +228,14 @@ class Client {
         try {
             $res = $sender->request('GET', $this->createUrl('webhook'), ['verify' => false]);
         } catch (GuzzleException $e) {
-            return 'Unknown send error';
+            throw new \Exception('Request error');
         }
         return json_decode($res->getBody());
     }
 
     /**
      * Logout from application
+     * @throws \Exception
      * @return mixed
      */
     public function logout() {
@@ -237,13 +246,14 @@ class Client {
                 ['verify' => false]
             );
         } catch (GuzzleException $e) {
-            return 'Unknown send error';
+            throw new \Exception('Request error');
         }
         return json_decode($res->getBody());
     }
 
     /**
      * Reboot application
+     * @throws \Exception
      * @return mixed
      */
     public function reboot() {
@@ -254,13 +264,14 @@ class Client {
                 ['verify' => false]
             );
         } catch (GuzzleException $e) {
-            return 'Unknown send error';
+            throw new \Exception('Request error');
         }
         return json_decode($res->getBody());
     }
 
     /**
      * Return not sent messages queue
+     * @throws \Exception
      * @return mixed
      */
     public function getMessagesQueue() {
@@ -271,13 +282,14 @@ class Client {
                 ['verify' => false]
             );
         } catch (GuzzleException $e) {
-            return 'Unknown send error';
+            throw new \Exception('Request error');
         }
         return json_decode($res->getBody());
     }
 
     /**
      * Clear not sent messages queue
+     * @throws \Exception
      * @return mixed
      */
     public function clearMessagesQueue() {
@@ -288,7 +300,7 @@ class Client {
                 ['verify' => false]
             );
         } catch (GuzzleException $e) {
-            return 'Unknown send error';
+            throw new \Exception('Request error');
         }
         return json_decode($res->getBody());
     }
